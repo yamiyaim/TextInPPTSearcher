@@ -15,7 +15,7 @@ public class Log { // public static String m_PathName = Util.LOG_FILE_PATH;
 		String stPath = "";
 		String stFileName = "";
 
-		String m_PathName = "C:\\Users\\gmlal\\Desktop\\log\\";
+		String m_PathName = "C:\\log\\";
 
 		stPath = m_PathName;
 		stFileName = m_FileName;
