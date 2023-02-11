@@ -27,7 +27,7 @@ import com.spire.presentation.ISlide;
 import com.spire.presentation.ParagraphEx;
 import com.spire.presentation.Presentation;
 
-public class FileDialog {
+public class TextSearcherinPPT {
 
 	public static void main(String[] args) throws Exception {
 		FileSearcher js =new FileSearcher();
@@ -37,6 +37,8 @@ public class FileDialog {
 
 class FileSearcher extends JFrame implements ActionListener {
 	
+	String header[] = {"file name", "page", "textbox", "textline", "text"};
+
 	File dir;
 	File[] pptxfiles;
 	
@@ -45,13 +47,16 @@ class FileSearcher extends JFrame implements ActionListener {
 	
 	JButton btnOpen = new JButton("select folder");
 	JButton btnSearch = new JButton("search start");
+	JButton btnLogging = new JButton("logging to text");
+	JPanel centerPanel = new JPanel();
 	JLabel dirpath = new JLabel(" ");
 	
 	JScrollPane scrolledTable;
 	static JTable table;
 	
 	public FileSearcher() throws Exception {
-		this.setSize(800, 500);
+		this.setTitle("TextSearcherinPPT");
+		this.setSize(500, 500);
 		this.setLocation(100, 100);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLayout(new BorderLayout());
@@ -62,26 +67,24 @@ class FileSearcher extends JFrame implements ActionListener {
 	}
 	
 	public void panelinit() {
-		JPanel topPanel1 = new JPanel();
-		JPanel topPanel2 = new JPanel();
-
-		topPanel1.add(btnOpen);
-		
-		JLabel searchlabel = new JLabel("search target : ");
-		topPanel2.add(searchlabel);
-		search = new JTextField(10);
-		topPanel2.add(search);
-		topPanel2.add(btnSearch);
-		
 		JPanel topPanel = new JPanel();
-		topPanel.add(topPanel1);
+		JPanel bottomPanel = new JPanel();
+		JLabel searchlabel = new JLabel("search target : ");
+		search = new JTextField(10);
+
+		topPanel.add(btnOpen);
 		topPanel.add(dirpath);
-		add(topPanel, BorderLayout.WEST);		
-		add(topPanel2, BorderLayout.EAST);		
+		centerPanel.add(searchlabel);
+		centerPanel.add(search);
+		centerPanel.add(btnSearch);
+
+		add(topPanel, BorderLayout.NORTH);		
+
+		bottomPanel.add(btnLogging);
+		add(bottomPanel, BorderLayout.SOUTH);		
 	}
 	public void tableinit() {
 		
-		String header[] = {"file name", "page", "textbox", "textline", "text"};
 		DefaultTableModel model = new DefaultTableModel(header,0);
 		
 		table = new JTable(model);
@@ -89,12 +92,14 @@ class FileSearcher extends JFrame implements ActionListener {
 		scrolledTable = new JScrollPane(table);
 		scrolledTable.setBorder(BorderFactory.createEmptyBorder(0,10,0,10));
 		
-		add(scrolledTable,BorderLayout.SOUTH);
+		centerPanel.add(scrolledTable);
+		add(centerPanel,BorderLayout.CENTER);
 	}
 	
 	public void set() {
 		btnOpen.addActionListener(this);
 		btnSearch.addActionListener(this);
+		btnLogging.addActionListener(this);
 		jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		jfc.setMultiSelectionEnabled(false);
 	}
@@ -103,11 +108,10 @@ class FileSearcher extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent arg0) {
 		if (arg0.getSource() == btnOpen) {
 			if (jfc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-				dirpath.setText("searching filepath : " + jfc.getSelectedFile().toString());
+				dirpath.setText("filepath : " + jfc.getSelectedFile().toString());
 				dir = jfc.getSelectedFile();
 				pptxfiles = dir.listFiles(new FilenameFilter() {
 					
-					@Override
 					public boolean accept(File dir, String name) {
 						return name.endsWith("pptx");
 					}
@@ -123,6 +127,21 @@ class FileSearcher extends JFrame implements ActionListener {
 				}
 			}
 			
+		} else if (arg0.getSource() == btnLogging) {
+			DefaultTableModel model = (DefaultTableModel)table.getModel();
+			StringBuilder log = new StringBuilder();
+			for (int i=0;i<model.getRowCount();i++) {
+				for (int j=0;j<5;j++) {
+					log.append(header[j]);
+					log.append(" : ");
+					log.append(model.getValueAt(i, j).toString());
+					log.append(", ");
+				}
+				int loglength = log.length();
+				if (loglength>0) {log.delete(loglength-2, loglength);}
+				Log.LogtoTxt(dir.getPath(), log.toString());
+				log.delete(0, log.length());
+			}
 		}
 	}
 	

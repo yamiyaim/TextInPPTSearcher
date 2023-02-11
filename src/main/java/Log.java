@@ -1,7 +1,7 @@
-import java.util.Date;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Log { // public static String m_PathName = Util.LOG_FILE_PATH;
 
@@ -11,13 +11,9 @@ public class Log { // public static String m_PathName = Util.LOG_FILE_PATH;
 	/***************************
 	 * Logging Method *
 	 ***************************/
-	public static void TraceLog(String log) {
-		String stPath = "";
+	public static void LogtoTxt(String dirpath, String log) {
 		String stFileName = "";
 
-		String m_PathName = "C:\\log\\";
-
-		stPath = m_PathName;
 		stFileName = m_FileName;
 		SimpleDateFormat formatter1 = new SimpleDateFormat("yyyyMMdd");
 		SimpleDateFormat formatter2 = new SimpleDateFormat("HH:mm:ss");
@@ -26,7 +22,7 @@ public class Log { // public static String m_PathName = Util.LOG_FILE_PATH;
 		String stTime = formatter2.format(new Date());
 		
 		StringBuffer bufLogPath = new StringBuffer();
-		bufLogPath.append(stPath);
+		bufLogPath.append(dirpath+"\\");
 		bufLogPath.append(stFileName);
 		bufLogPath.append("_");
 		bufLogPath.append(stDate);
